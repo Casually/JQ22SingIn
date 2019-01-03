@@ -35,7 +35,7 @@ public class GainSignInParam {
         return param;
     }
 
-    private Response reqUrl(String cookie) {
+    public Response reqUrl(String cookie) {
 
         Request request = new Request();
         request.setUri(GAINSINGINPARAMURL);
