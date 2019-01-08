@@ -16,9 +16,17 @@ import java.util.HashMap;
  *
  * @author Casually5
  */
-public class SingInAll {
+public class SingInAll extends Thread{
+    @Override
+    public void run() {
+        try {
+            singinAll();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public static void singinAll() throws IOException {
+    private void singinAll() throws IOException {
         String dataPath = "D:/jq22.txt";
         dataPath = System.getProperty("user.dir") + "/data/jq22.txt";
         FileReader file = new FileReader(dataPath);
@@ -59,6 +67,14 @@ public class SingInAll {
             } else {
                 System.out.println("登录失败");
             }
+
+            try {
+                /** 没签到完成一个都休眠一分钟，避免过多的请求，导致无法正确签到 */
+                sleep(60 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        System.out.println("签到完成");
     }
 }
