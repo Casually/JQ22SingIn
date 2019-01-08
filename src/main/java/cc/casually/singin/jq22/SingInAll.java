@@ -2,10 +2,13 @@ package cc.casually.singin.jq22;
 
 import cc.casually.htmlParse.http.Response;
 import cc.casually.htmlParse.nodeutil.Nodes;
+import cc.casually.singin.jq22.util.FileUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -16,10 +19,14 @@ import java.util.HashMap;
 public class SingInAll {
 
     public static void singinAll() throws IOException {
-        FileReader file = new FileReader("D:/jq22.txt");
+        String dataPath = "D:/jq22.txt";
+        dataPath = System.getProperty("user.dir") + "/data/jq22.txt";
+        FileReader file = new FileReader(dataPath);
         BufferedReader bf = new BufferedReader(file);
         String line = "";
         String[] arrs = new String[2];
+        FileUtil.writeFile( System.getProperty("user.dir") + "/data/result.txt",
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         while ((line = bf.readLine()) != null) {
             line = line.replaceAll(" ", "");
             if (line.startsWith("#")) {
@@ -28,6 +35,7 @@ public class SingInAll {
             arrs = line.split("=");
             Response response = new Response();
             String cookie = new Login().getCookie(arrs[0], arrs[1]);
+
             if (!"登录失败".equals(cookie)) {
                 GainSignInParam gainSignInParam = new GainSignInParam();
                 /** 获取当前签到几天 */
@@ -39,6 +47,8 @@ public class SingInAll {
                 /** 获取最终签到多少天 */
                 String endStr = new Nodes(gainSignInParam.reqUrl(cookie).getBodyStr()).getListNodeForTag("h4").get(0).getText();
                 System.out.println(startStr + "===" + endStr);
+                FileUtil.writeFile( System.getProperty("user.dir") + "/data/result.txt",
+                        arrs[0] + "：" + startStr + "===" + endStr);
                 if (startStr.equals(endStr)){
                     System.out.println(String.format("账号：%s签到失败",arrs[0]));
                 }else{

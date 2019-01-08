@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加账号</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+    <div style="padding: 20px;">
+        <h2>说明：</h2>
+        <h4>1、请正确填写JQ22网站登录账号和密码<b style="color: red;">（不能对QQ、微博等第三方账号登录生效）</b>，以免自动签到失败。</h4>
+        <h4>2、本站点提供自动签到，不会使用任何账号登录操作</h4>
+        <h4>3、自行修改密码后，即可解除本站点的自动签到功能</h4>
+        <h4>4、<b style="color: red;">自提交之日起，第二天才会自动签到，提交之日当天请自行签到</b></h4>
+        <h4>5、为避免未能自动签到给您带来的损失，烦请前三日自行登录观察（<b style="color: red;">每日自动签到时间为凌晨1点</b>）</h4>
+        <br/>
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon" id="sizing-addon1-user">用 户 名：</span>
+            <input type="text" class="form-control" id="user" placeholder="Username" aria-describedby="sizing-addon1-user">
+        </div>
+        <br/>
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon" id="sizing-addon1-ps">密 码：</span>
+            <input type="password" class="form-control" id="passwd" placeholder="Password" aria-describedby="sizing-addon1-ps">
+        </div>
+        <br/>
+        <button class="btn btn-success" style="width: 50%" id="sub">提 交</button>
+    </div>
+</body>
+</html>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.js"></script>
+<script>
+    $("#sub").click(function(){
+        $.post(
+            "/jq22/add/user",
+            {
+                "user":$("#user").val(),
+                "passwd":$("#passwd").val()
+            },
+            function (data) {
+                alert(data)
+            }
+        )
+
+    })
+</script>
