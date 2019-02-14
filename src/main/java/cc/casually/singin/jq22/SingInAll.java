@@ -2,7 +2,7 @@ package cc.casually.singin.jq22;
 
 import cc.casually.htmlParse.http.Response;
 import cc.casually.htmlParse.nodeutil.Nodes;
-import cc.casually.singin.jq22.util.FileUtil;
+import cc.casually.singin.util.FileUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -85,6 +85,8 @@ public class SingInAll extends Thread {
         while ((line = bf.readLine()) != null) {
             datas.add(line);
         }
+        bf.close();
+        file.close();
         return datas;
     }
 }

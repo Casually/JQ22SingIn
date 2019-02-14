@@ -1,4 +1,4 @@
-package cc.casually.singin.jq22.util;
+package cc.casually.singin.util;
 
 import java.io.*;
 
