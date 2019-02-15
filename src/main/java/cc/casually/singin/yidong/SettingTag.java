@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 13545
@@ -21,26 +23,28 @@ import java.util.List;
 public class SettingTag {
 
     private String dataPath = System.getProperty("user.dir") + "/data/yidong.txt";
+    private String dataPathe = System.getProperty("user.dir") + "/data/yidongemail.txt";
 
     @RequestMapping("/gettags")
     @ResponseBody
     public Object getTags(){
-        List<String> tags = new ArrayList<>(16);
-
+        List<String> tags = null;
         try {
-            FileReader file = new FileReader(dataPath);
-            BufferedReader bf = new BufferedReader(file);
-            String line = "";
-            while ((line = bf.readLine()) != null) {
-                tags.add(line);
-            }
-            bf.close();
-            file.close();
-        } catch (Exception e) {
+            tags = FileUtil.readLineFile(dataPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<String> emails = null;
+        try {
+            emails = FileUtil.readLineFile(dataPathe);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return tags;
+        Map<String,Object> result = new HashMap<>(2);
+        result.put("tag",tags);
+        result.put("email",emails);
+        return result;
     }
 
     @RequestMapping("/settag")
@@ -50,9 +54,15 @@ public class SettingTag {
 
     @RequestMapping("/addtags")
     @ResponseBody
-    public Object addtags(@RequestParam String tags){
-        String[] tag = tags.split(",");
-        File file = new File(dataPath);
+    public Object addtags(@RequestParam String tags,@RequestParam String email){
+        writeData(tags,dataPath);
+        writeData(email,dataPathe);
+        return "success";
+    }
+
+    public void writeData(String obj,String fileP) {
+        String[] strs = obj.split(",");
+        File file = new File(fileP);
         if(file.isFile()){
             file.delete();
         }
@@ -61,11 +71,8 @@ public class SettingTag {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        for(String str:tag){
-            FileUtil.writeFile(dataPath,str);
+        for(String str:strs){
+            FileUtil.writeFile(fileP,str);
         }
-
-        return "success";
     }
 }

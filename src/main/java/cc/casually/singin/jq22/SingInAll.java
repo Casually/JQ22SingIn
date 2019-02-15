@@ -77,16 +77,9 @@ public class SingInAll extends Thread {
     }
 
     public List<String> readData() throws IOException {
-        List<String> datas = new ArrayList<>(16);
+
         String dataPath = System.getProperty("user.dir") + "/data/jq22.txt";
-        FileReader file = new FileReader(dataPath);
-        BufferedReader bf = new BufferedReader(file);
-        String line = "";
-        while ((line = bf.readLine()) != null) {
-            datas.add(line);
-        }
-        bf.close();
-        file.close();
+        List<String> datas  = FileUtil.readLineFile(dataPath);
         return datas;
     }
 }

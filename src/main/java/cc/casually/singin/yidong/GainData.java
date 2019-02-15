@@ -5,10 +5,9 @@ import cc.casually.htmlParse.http.Request;
 import cc.casually.htmlParse.http.Response;
 import cc.casually.htmlParse.nodeutil.Node;
 import cc.casually.htmlParse.nodeutil.Nodes;
+import cc.casually.singin.util.FileUtil;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -29,15 +28,8 @@ public class GainData extends Thread {
     public void run() {
         String dataPath = System.getProperty("user.dir") + "/data/yidong.txt";
         try {
-            FileReader file = new FileReader(dataPath);
-            BufferedReader bf = new BufferedReader(file);
-            String line = "";
-            while ((line = bf.readLine()) != null) {
-                tags.add(line);
-            }
-            bf.close();
-            file.close();
-        } catch (Exception e) {
+            tags = FileUtil.readLineFile(dataPath);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -48,20 +40,30 @@ public class GainData extends Thread {
             }
             StringBuffer table = new StringBuffer();
             table.append("<table>");
+            re.remove(0);
             for (Map<String, String> map:re){
                 table.append(String.format("<tr><td><a href='%s%s'>%s</a></td></tr>",url,map.get("code"),map.get("title")));
             }
             table.append("</table>");
-            sendEmail(table.toString());
+            try {
+                sendEmail(table.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void sendEmail(String content){
+    public void sendEmail(String content) throws IOException {
         Request request = new Request();
         request.setUri("http://xa.makalu.cc/qdwy/app/send/email.html");
         request.addBody("subject","移动招标信息");
         request.addBody("content",content);
-        request.addBody("to","gaojun@makalu.cc");
+        List<String> email = FileUtil.readLineFile(System.getProperty("user.dir") + "/data/yidongemail.txt");
+        StringBuffer sb = new StringBuffer();
+        for (String ema:email){
+            sb.append(ema + ",");
+        }
+        request.addBody("to",sb.toString());
         Response response = HttpClient.post(request);
         System.out.println(response.getBodyStr());
     }
